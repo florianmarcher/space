@@ -3,34 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-class Rand
-{
-	
-	public Rand(ulong seed)
-	{
-		nProcGen = seed;
-	}
-	private ulong nProcGen;
-
-	public uint Next()
-	{
-		nProcGen += 0xe120fc15;
-		var tmp = nProcGen * 0x4a39b70d;
-		var m1 = (tmp >> 32) ^ tmp;
-		tmp = m1 * 0x12fad5c9;
-		var m2 = (uint) ((tmp >> 32) ^ tmp);
-		return m2;
-	}
-
-	public double NextDouble()
-	{
-		var n = Next();
-		var ret = n / 1000000000.0f;
-		ret %= 1.0f;
-		return ret;
-	}
-}
-
 public class LehmerRng
 {
 	private const int a = 16807;

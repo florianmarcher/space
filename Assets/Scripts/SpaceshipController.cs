@@ -10,15 +10,16 @@ public class SpaceshipController : MonoBehaviour
     [SerializeField] private float cameraSmooth = 4f;
     
     private float speed;
-    private Rigidbody r;
+    [SerializeField]private Rigidbody r;
     private Quaternion look_rotation;
     private float right_smooth;
     private float up_smooth;
+    private Vector3 camera_target_offset;
     
     // Start is called before the first frame update
     void Start()
     {
-        r = GetComponent<Rigidbody>();
+        // r = GetComponent<Rigidbody>();
         r.useGravity = false;
         look_rotation = transform.rotation;
 
@@ -29,22 +30,28 @@ public class SpaceshipController : MonoBehaviour
     void FixedUpdate()
     {
         
-        speed = Mathf.Lerp(speed, normalSpeed, Time.deltaTime * 10);
         
         if(Input.GetKey(KeyCode.LeftShift))
+        {
             speed = Mathf.Lerp(speed, accelerationSpeed, Time.deltaTime * 10);
-
+            camera_target_offset = transform.TransformDirection(Vector3.back * 0.1f);
+        }
+        else
+        {
+            speed = Mathf.Lerp(speed, normalSpeed, Time.deltaTime * 10);
+            camera_target_offset = Vector3.zero;
+        }
 
         //Set moveDirection to the vertical axis (up and down keys) * speed
         var move_direction = new Vector3(0, 0, speed);
         //Transform the vector3 to local space
         move_direction = transform.TransformDirection(move_direction);
         //Set the velocity, so you can move
-        r.velocity = new Vector3(move_direction.x, move_direction.y, move_direction.z);
+        r.velocity = move_direction * -1;
 
         //Camera follow
         Transform main_camera_transform;
-        (main_camera_transform = mainCamera.transform).position = Vector3.Lerp(mainCamera.transform.position, cameraPosition.position, Time.deltaTime * cameraSmooth);
+        (main_camera_transform = mainCamera.transform).position = Vector3.Lerp(mainCamera.transform.position, cameraPosition.position + camera_target_offset, Time.deltaTime * cameraSmooth);
         mainCamera.transform.rotation = Quaternion.Lerp(main_camera_transform.rotation, cameraPosition.rotation, Time.deltaTime * cameraSmooth);
         
         float right = 0;

@@ -24,12 +24,10 @@ namespace SpaceBodies
 
         public void Init(Transform p, float s, float d, int seed_)
         {
-            base.Init(seed_);
-            size = s;
+            base.Init(seed_, s);
             distance = d;
             seed = seed_;
             pivot = p;
-            random = new Random(seed_);
             speed = random.NextFloat(0.002f, 0.01f);
             rotation_speed = random.NextFloat(1, -10);
         

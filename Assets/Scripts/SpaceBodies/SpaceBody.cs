@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 namespace SpaceBodies
 {
@@ -11,11 +12,27 @@ namespace SpaceBodies
         protected Random random;
 
 
-        protected void Init(int seed_)
+        protected void Init(int seed_, float s)
         {
             seed = seed_;
-            random = new Random(seed);
+            size = s;
+            if(random == null) random = new Random(seed);
             time_offset = (float) (random.NextDouble() * 1000);
+
+            StartCoroutine(ScaleIn(1));
+        }
+
+        IEnumerator ScaleIn(float duration)
+        {
+            transform.localScale = Vector3.zero;
+
+            while (transform.localScale.x < size)
+            {
+                transform.localScale += size / duration * Time.deltaTime * Vector3.one;
+                yield return null;
+            }
+            
+            transform.localScale = Vector3.one * size;
         }
         
     }

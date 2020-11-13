@@ -18,7 +18,14 @@ public class SpaceshipController : MonoBehaviour
     private float right_smooth;
     private float up_smooth;
     private Vector3 camera_target_offset;
-    
+
+    public static SpaceshipController instance { get; private set; }
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -89,7 +96,7 @@ public class SpaceshipController : MonoBehaviour
         mouse_y = Mathf.Clamp(mouse_y, -max, max);
         
         var camera_rotation = new Vector3(-mouse_y, mouse_x, 0) * 2f;
-        Log.print("rot: " + camera_rotation);
+        // Log.print("rot: " + camera_rotation);
         
         if(shift)
             camera_base.localRotation = Quaternion.Lerp(Quaternion.Euler(camera_rotation * 2) * camera_base.localRotation, Quaternion.identity, Time.deltaTime * cameraRotationSmooth);

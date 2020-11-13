@@ -44,14 +44,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 677774f732a01584cb00b3eb5168d773, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  renderDistance: 2
-  chunk_resolution: 4
+  renderDistance: 3
+  chunk_resolution: 3
   chunk_size: 1500
   planet: {fileID: 7441792944309352648, guid: 6ba78e5b82ff0af41a20e4cd450a2473, type: 3}
   solar_system: {fileID: 7441792944309352648, guid: 1a79e062930ecca46b5ca54c2c2365b2,
     type: 3}
   space_chunk: {fileID: 1050701682610185506, guid: 44f2bcea08687404198d378bdd2e11b9,
     type: 3}
+  generator_location: {x: 0, y: 0, z: 0}
 --- !u!54 &661022891
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 6602985658722971095}
   - component: {fileID: 8954971563887597853}
   - component: {fileID: 5754564982503357200}
+  - component: {fileID: 1785557810021552536}
+  - component: {fileID: 5482794934685009614}
   m_Layer: 0
   m_Name: Solarsystem
   m_TagString: Untagged
@@ -97,6 +99,32 @@ MonoBehaviour:
   size: 0
   rotation_speed: 0
   time_offset: 0
+--- !u!135 &1785557810021552536
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7441792944309352648}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.12
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!135 &5482794934685009614
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7441792944309352648}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.009999998
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &9052323567597198374
 GameObject:
   m_ObjectHideFlags: 0

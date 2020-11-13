@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SpaceBodies
 {
-    public class SpaceBody : MonoBehaviour
+    public abstract class SpaceBody : MonoBehaviour
     {
         [SerializeField]public int seed;
         [SerializeField]protected float size;
@@ -44,6 +44,13 @@ namespace SpaceBodies
             transform.parent = SpaceGenerator.instance.transform;
             StartCoroutine(Scale(1, size, 0, () => Destroy(gameObject)));
         }
-        
+
+        public virtual Vector3 AddPlanetMovementFactor(Vector3 movement)
+        {
+            return movement;
+        }
+
+        public virtual void OnSpaceshipEnter(){}
+        public virtual void OnSpaceshipExit(){}
     }
 }

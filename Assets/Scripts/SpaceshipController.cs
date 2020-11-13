@@ -1,4 +1,7 @@
-﻿using Misc;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Misc;
+using SpaceBodies;
 using UnityEngine;
 
 public class SpaceshipController : MonoBehaviour
@@ -13,11 +16,14 @@ public class SpaceshipController : MonoBehaviour
     [SerializeField] private float cameraRotationSmooth = 4f;
     
     private float speed;
-    [SerializeField]private Rigidbody r;
+    [SerializeField]private Rigidbody space_rigidbody;
     private Quaternion look_rotation;
     private float right_smooth;
     private float up_smooth;
     private Vector3 camera_target_offset;
+
+    private readonly List<SpaceBody> space_bodies_in_reach = new List<SpaceBody>();
+    private SpaceBody nearest_space_body;
 
     public static SpaceshipController instance { get; private set; }
 
@@ -30,11 +36,13 @@ public class SpaceshipController : MonoBehaviour
     void Start()
     {
         // r = GetComponent<Rigidbody>();
-        r.useGravity = false;
+        space_rigidbody.useGravity = false;
         look_rotation = transform.rotation;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        
+        InvokeRepeating(nameof(UpdateNearestSpaceBody), 0, 0.5f);
     }
 
     void FixedUpdate()
@@ -57,7 +65,7 @@ public class SpaceshipController : MonoBehaviour
         //Transform the vector3 to local space
         move_direction = transform.TransformDirection(move_direction);
         //Set the velocity, so you can move
-        r.velocity = move_direction * -1;
+        space_rigidbody.velocity = AddPlanetMovementFactor(move_direction * -1);
 
         //Camera follow
         Transform main_camera_transform;
@@ -102,5 +110,56 @@ public class SpaceshipController : MonoBehaviour
             camera_base.localRotation = Quaternion.Lerp(Quaternion.Euler(camera_rotation * 2) * camera_base.localRotation, Quaternion.identity, Time.deltaTime * cameraRotationSmooth);
         else
             camera_base.localRotation = Quaternion.Euler(camera_rotation + camera_base.localRotation.eulerAngles);
+    }
+
+    private Vector3 AddPlanetMovementFactor(Vector3 movement)
+    {
+        if (!nearest_space_body)
+            return movement;
+        return nearest_space_body.AddPlanetMovementFactor(movement);
+    }
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        var space_body = other.GetComponent<SpaceBody>();
+        if(!space_body)
+            return;
+        
+        space_body.OnSpaceshipEnter();
+        Log.print($"enter {space_body}");
+        space_bodies_in_reach.Add(space_body);
+        UpdateNearestSpaceBody();
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        var space_body = other.GetComponent<SpaceBody>();
+        if(!space_body)
+            return;
+        
+        space_body.OnSpaceshipExit();
+        Log.print($"exit {space_body}");
+        space_bodies_in_reach.Remove(space_body);
+
+        if (nearest_space_body != space_body)
+            return;
+        nearest_space_body = null;
+        UpdateNearestSpaceBody();
+    }
+
+    private void UpdateNearestSpaceBody()
+    {
+        if(space_bodies_in_reach.Count == 0)
+            return;
+        
+        if (!nearest_space_body)
+            nearest_space_body = space_bodies_in_reach.First();
+        
+        foreach (var space_body in space_bodies_in_reach)
+        {
+            if (space_body.transform.position.sqrMagnitude < nearest_space_body.transform.position.sqrMagnitude)
+                nearest_space_body = space_body;
+        }
     }
 }

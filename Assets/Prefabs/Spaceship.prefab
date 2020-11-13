@@ -43,6 +43,7 @@ GameObject:
   - component: {fileID: 2096606384831645365}
   - component: {fileID: 7056030702120601080}
   - component: {fileID: 7056030702120601081}
+  - component: {fileID: 6598674342602286119}
   m_Layer: 0
   m_Name: mesh
   m_TagString: Untagged
@@ -77,7 +78,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb50dc95c8453d54ab1597c70e46eba4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalSpeed: 0.2
+  normalSpeed: 10
   accelerationSpeed: 50
   camera_target: {fileID: 7056030702894081076}
   camera_base: {fileID: 2068738334586262363}
@@ -85,7 +86,7 @@ MonoBehaviour:
   rotationSpeed: 1
   cameraSmooth: 4
   cameraRotationSmooth: 1
-  r: {fileID: 0}
+  space_rigidbody: {fileID: 0}
 --- !u!33 &7056030702120601080
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -133,6 +134,19 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!135 &6598674342602286119
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7056030702120601087}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.024141058
+  m_Center: {x: 0, y: 0.008887496, z: 0.0044244854}
 --- !u!1 &7056030702279948681
 GameObject:
   m_ObjectHideFlags: 0

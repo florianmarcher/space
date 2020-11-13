@@ -254,7 +254,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2096606384831645365, guid: 6ee54dc886483d84b939d662313d4d96,
         type: 3}
-      propertyPath: r
+      propertyPath: space_rigidbody
       value: 
       objectReference: {fileID: 661022891}
     - target: {fileID: 7056030702279948681, guid: 6ee54dc886483d84b939d662313d4d96,

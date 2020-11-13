@@ -1,14 +1,16 @@
-﻿using Misc;
+﻿using System.Linq;
+using Misc;
 using UnityEngine;
 
 namespace SpaceBodies
 {
     public class Solarsystem : SpaceBody
     {
-        private GameObject[] planets;
+        private Planet[] planets;
 
         private float brightness;
 
+        private SphereCollider sphere_collider;
 
         // Start is called before the first frame update
         public void Init(int seed_)
@@ -27,20 +29,48 @@ namespace SpaceBodies
             point_light.intensity = brightness;
         
             CreatePlanets();
+
+            var colliders = GetComponents<SphereCollider>();
+            sphere_collider = colliders.FirstOrDefault(c => !c.isTrigger);
+            Debug.Assert(sphere_collider != null, nameof(sphere_collider) + " != null");
+            sphere_collider.enabled = false;
         }
 
         private void CreatePlanets()
         {
             
             var planet_count = random.Next(5);
-            planets = new GameObject[planet_count];
+            planets = new Planet[planet_count];
             for (var i = 0; i < planet_count; i++)
             {
                 var planet_size = random.NextFloat(0.1f, 0.5f);
                 var distance = 0.03f + random.NextFloat(0.02f * i, 0.02f * (i + 1));
             
-                planets[i] = Instantiate(SpaceGenerator.instance.planet, transform);
+                planets[i] = Instantiate(SpaceGenerator.instance.planet, transform).GetComponent<Planet>();
                 planets[i].GetComponent<Planet>().Init(transform, planet_size, distance, random.Next());
+            }
+        }
+
+        public override Vector3 AddPlanetMovementFactor(Vector3 movement)
+        {
+            return movement * 0.1f;
+        }
+
+        public override void OnSpaceshipEnter()
+        {
+            sphere_collider.enabled = true;
+            foreach (var planet in planets)
+            {
+                planet.SetCollisionEnabled(true);
+            }
+        }
+
+        public override void OnSpaceshipExit()
+        {
+            sphere_collider.enabled = false;
+            foreach (var planet in planets)
+            {
+                planet.SetCollisionEnabled(false);
             }
         }
     }

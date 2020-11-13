@@ -1,4 +1,5 @@
-﻿using Misc;
+﻿using System;
+using Misc;
 using UnityEngine;
 
 namespace SpaceBodies
@@ -9,10 +10,12 @@ namespace SpaceBodies
         [SerializeField] private float distance;
         [SerializeField] private float speed;
 
-        // Start is called before the first frame update
-        void Start()
+        public Vector3 delta_position;
+        public SphereCollider[] colliders;
+
+        private void Awake()
         {
-        
+            colliders = GetComponents<SphereCollider>();
         }
 
         // Update is called once per frame
@@ -38,7 +41,21 @@ namespace SpaceBodies
             material.color = color;
             material.SetColor(Global.emission, color * 0.05f);
 
+            foreach (var sphere_collider in colliders)
+                sphere_collider.enabled = false;
+
         }
-    
+
+        public override Vector3 AddPlanetMovementFactor(Vector3 movement)
+        {
+            return movement * 0.01f;
+        }
+
+        public void SetCollisionEnabled(bool new_enabled)
+        {
+            
+            foreach (var sphere_collider in colliders)
+                sphere_collider.enabled = new_enabled;
+        }
     }
 }

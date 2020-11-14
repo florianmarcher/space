@@ -19,11 +19,11 @@ namespace SpaceBodies
         }
 
         // Update is called once per frame
-        void Update()
+        /*void Update()
         {
             transform.localPosition = new Vector3(distance * Mathf.Sin((Time.timeSinceLevelLoad + time_offset) * speed), distance * Mathf.Cos((Time.timeSinceLevelLoad + time_offset) * speed));
             transform.localRotation = Quaternion.Euler(0, 0, rotation_speed * Time.timeSinceLevelLoad);
-        }
+        }*/
 
         public void Init(Transform p, float s, float d, int seed_)
         {
@@ -44,6 +44,7 @@ namespace SpaceBodies
             foreach (var sphere_collider in colliders)
                 sphere_collider.enabled = false;
 
+            transform.localPosition = new Vector3(distance * Mathf.Sin((Time.timeSinceLevelLoad + time_offset) * speed), distance * Mathf.Cos((Time.timeSinceLevelLoad + time_offset) * speed));
         }
 
         public override Vector3 AddPlanetMovementFactor(Vector3 movement)
@@ -56,6 +57,7 @@ namespace SpaceBodies
             
             foreach (var sphere_collider in colliders)
                 sphere_collider.enabled = new_enabled;
+            transform.GetChild(0).gameObject.SetActive(new_enabled);
         }
     }
 }

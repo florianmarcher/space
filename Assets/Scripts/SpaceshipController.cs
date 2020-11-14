@@ -2,6 +2,7 @@
 using System.Linq;
 using Misc;
 using SpaceBodies;
+using UI;
 using UnityEngine;
 
 public class SpaceshipController : MonoBehaviour
@@ -21,6 +22,7 @@ public class SpaceshipController : MonoBehaviour
     private float right_smooth;
     private float up_smooth;
     private Vector3 camera_target_offset;
+    private Planet planet_to_land;
 
     private readonly List<SpaceBody> space_bodies_in_reach = new List<SpaceBody>();
     private SpaceBody nearest_space_body;
@@ -123,29 +125,41 @@ public class SpaceshipController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         var space_body = other.GetComponent<SpaceBody>();
-        if(!space_body)
-            return;
-        
-        space_body.OnSpaceshipEnter();
-        Log.print($"enter {space_body}");
-        space_bodies_in_reach.Add(space_body);
-        UpdateNearestSpaceBody();
+        if (space_body)
+        {
+            space_body.OnSpaceshipEnter();
+            Log.print($"enter {space_body}");
+            space_bodies_in_reach.Add(space_body);
+            UpdateNearestSpaceBody();
+        }
+
+        if (other.name.Equals("PlanetLandingTrigger"))
+        {
+            planet_to_land = other.transform.parent.GetComponent<Planet>();
+            SpaceHUD.instance.EnablePrompt("[E] Land");
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
         var space_body = other.GetComponent<SpaceBody>();
-        if(!space_body)
-            return;
-        
-        space_body.OnSpaceshipExit();
-        Log.print($"exit {space_body}");
-        space_bodies_in_reach.Remove(space_body);
+        if (space_body)
+        {
+            space_body.OnSpaceshipExit();
+            Log.print($"exit {space_body}");
+            space_bodies_in_reach.Remove(space_body);
 
-        if (nearest_space_body != space_body)
-            return;
-        nearest_space_body = null;
-        UpdateNearestSpaceBody();
+            if (nearest_space_body != space_body)
+                return;
+            nearest_space_body = null;
+            UpdateNearestSpaceBody();
+        }
+        
+        if (other.name.Equals("PlanetLandingTrigger"))
+        {
+            planet_to_land = null;
+            SpaceHUD.instance.DisablePrompt();
+        }
     }
 
     private void UpdateNearestSpaceBody()

@@ -80,6 +80,11 @@ namespace SpaceBodies
                 var chunk = chunks.FirstOrDefault(c => c.position == element - generator_location);
                 if(chunk != default)
                 {
+                    if(element.sqrMagnitude < 2.5)
+                        chunk.OnSpaceShipEnter();
+                    else
+                        chunk.OnSpaceShipExit();
+                    
                     chunk.UpdatePosition(generator_location);
                     continue;
                 }                

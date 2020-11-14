@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   renderDistance: 3
   chunk_resolution: 3
-  chunk_size: 500
+  chunk_size: 1500
   planet: {fileID: 7441792944309352648, guid: 6ba78e5b82ff0af41a20e4cd450a2473, type: 3}
   solar_system: {fileID: 7441792944309352648, guid: 1a79e062930ecca46b5ca54c2c2365b2,
     type: 3}

@@ -53,6 +53,9 @@ namespace SpaceBodies
                 // yield break;
                 yield return null;
             }
+            
+            if(pos.sqrMagnitude < 2.5)
+                OnSpaceShipEnter();
         }
 
 
@@ -74,6 +77,23 @@ namespace SpaceBodies
         {
             // Log.print($"updated chunk pos from {position} to {(position + chunk_location)}, chunk loc={chunk_location}");
             transform.localPosition = (position + chunk_location) * size;
+        }
+        
+        public void OnSpaceShipEnter()
+        {
+            // Log.print($"spaceship enter chunk {position}");
+            foreach (var space_body in space_bodies)
+            {
+                space_body.OnSpaceshipEnterChunk();
+            }
+        }
+        
+        public void OnSpaceShipExit()
+        {
+            foreach (var space_body in space_bodies)
+            {
+                space_body.OnSpaceshipExitChunk();
+            }
         }
     }
 }

@@ -20,7 +20,7 @@ namespace SpaceBodies
             if(random == null) random = new Random(seed);
             time_offset = (float) (random.NextDouble() * 1000);
 
-            StartCoroutine(Scale(10, 0, size));
+            StartCoroutine(Scale(1, 0, size));
         }
 
         IEnumerator Scale(float duration, float start, float end, Action on_finish = null)
@@ -52,5 +52,7 @@ namespace SpaceBodies
 
         public virtual void OnSpaceshipEnter(){}
         public virtual void OnSpaceshipExit(){}
+        public virtual void OnSpaceshipEnterChunk(){}
+        public virtual void OnSpaceshipExitChunk(){}
     }
 }

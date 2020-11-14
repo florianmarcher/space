@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Misc;
 using UnityEngine;
 
@@ -6,11 +7,12 @@ namespace SpaceBodies
 {
     public class Solarsystem : SpaceBody
     {
-        private Planet[] planets;
+        private List<Planet> planets = new List<Planet>();
 
         private float brightness;
 
         private SphereCollider sphere_collider;
+        private SphereCollider sphere_trigger;
 
         // Start is called before the first frame update
         public void Init(int seed_)
@@ -28,32 +30,33 @@ namespace SpaceBodies
             point_light.color = color;
             point_light.intensity = brightness;
         
-            CreatePlanets();
-
             var colliders = GetComponents<SphereCollider>();
             sphere_collider = colliders.FirstOrDefault(c => !c.isTrigger);
+            sphere_trigger = colliders.FirstOrDefault(c => c.isTrigger);
             Debug.Assert(sphere_collider != null, nameof(sphere_collider) + " != null");
+            Debug.Assert(sphere_trigger != null, nameof(sphere_trigger) + " != null");
             sphere_collider.enabled = false;
+            sphere_trigger.enabled = false;
         }
 
         private void CreatePlanets()
         {
             
             var planet_count = random.Next(5);
-            planets = new Planet[planet_count];
             for (var i = 0; i < planet_count; i++)
             {
                 var planet_size = random.NextFloat(0.1f, 0.5f);
                 var distance = 0.03f + random.NextFloat(0.02f * i, 0.02f * (i + 1));
             
-                planets[i] = Instantiate(SpaceGenerator.instance.planet, transform).GetComponent<Planet>();
-                planets[i].GetComponent<Planet>().Init(transform, planet_size, distance, random.Next());
+                var new_planet = Instantiate(SpaceGenerator.instance.planet, transform).GetComponent<Planet>();
+                new_planet.Init(transform, planet_size, distance, random.Next());
+                planets.Add(new_planet);
             }
         }
 
         public override Vector3 AddPlanetMovementFactor(Vector3 movement)
         {
-            return movement * 0.1f;
+            return movement * 0.5f;
         }
 
         public override void OnSpaceshipEnter()
@@ -72,6 +75,22 @@ namespace SpaceBodies
             {
                 planet.SetCollisionEnabled(false);
             }
+        }
+
+        public override void OnSpaceshipEnterChunk()
+        {
+            sphere_trigger.enabled = true;
+            CreatePlanets();
+        }
+        
+        public override void OnSpaceshipExitChunk()
+        {
+            sphere_trigger.enabled = false;
+            foreach (var planet in planets)
+            {
+                planet.Destroy();
+            }
+            planets.Clear();
         }
     }
 }

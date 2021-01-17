@@ -78,8 +78,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb50dc95c8453d54ab1597c70e46eba4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalSpeed: 10
-  accelerationSpeed: 50
+  normalSpeed: 15
+  accelerationSpeed: 80
   camera_target: {fileID: 7056030702894081076}
   camera_base: {fileID: 2068738334586262363}
   mainCamera: {fileID: 7056030703463410886}

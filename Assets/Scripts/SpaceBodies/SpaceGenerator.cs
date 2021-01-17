@@ -17,8 +17,9 @@ namespace SpaceBodies
         [SerializeField] public GameObject solar_system;
         [SerializeField] public GameObject space_chunk;
 
-        [SerializeField] private Vector3Int generator_location;
+        [SerializeField] public Vector3Int generator_location;
         private readonly List<SpaceChunk> chunks = new List<SpaceChunk>();
+        public Vector3 position => generator_location * chunk_size + transform.position;
 
         public static SpaceGenerator instance { get; private set; }
 
@@ -30,6 +31,7 @@ namespace SpaceBodies
         // Start is called before the first frame update
         private void Start()
         {
+            SetGeneratorPosition();
             StartCoroutine(nameof(GeneratePlanets));
         }
 
@@ -37,14 +39,14 @@ namespace SpaceBodies
         {
             foreach (Vector3Int element in new SpiralIterator(renderDistance))
             {
-                var seed = (element - generator_location).GetHashCode().GetHashCode();
+                var seed = (element - generator_location).GetHashCode().GetHashCode().GetHashCode();
                 var random = new Random(seed);
-                var chunk = Instantiate(space_chunk, element * chunk_size, Quaternion.identity);
+                var chunk = Instantiate(space_chunk, transform);
+                chunk.transform.localPosition = element * chunk_size;
                 var script = chunk.GetComponent<SpaceChunk>();
                 chunks.Add(script);
                 StartCoroutine(script.Init(random, chunk_size, chunk_resolution, element));
-                chunk.transform.parent = transform;
-                Log.Print("finished " + element);
+                // Log.Print("finished " + element);
                 // yield break;
                 yield return null;
             }
@@ -67,12 +69,9 @@ namespace SpaceBodies
         private void UpdateChunks()
         {
             var to_remove = chunks.Where(chunk => !IsInRenderDistance(chunk)).ToArray();
-            var element = Vector3Int.one;
             var i = 0;
             
-            for (element.x = -renderDistance; element.x <= renderDistance; element.x++)
-            for (element.y = -renderDistance; element.y <= renderDistance; element.y++)
-            for (element.z = -renderDistance; element.z <= renderDistance; element.z++)
+            foreach (Vector3Int element in new SpiralIterator(renderDistance))
             {
                 var chunk = chunks.FirstOrDefault(c => c.position == element - generator_location);
                 if(chunk != default)
@@ -98,6 +97,15 @@ namespace SpaceBodies
             return chunk.position.x >= -generator_location.x - renderDistance && chunk.position.x <= -generator_location.x + renderDistance && 
                    chunk.position.y >= -generator_location.y - renderDistance && chunk.position.y <= -generator_location.y + renderDistance && 
                    chunk.position.z >= -generator_location.z - renderDistance && chunk.position.z <= -generator_location.z + renderDistance;
+        }
+
+        private void SetGeneratorPosition()
+        {
+            var tmp_pos = PersistantData.SpaceTransform.position / chunk_size;
+            generator_location = new Vector3Int((int) tmp_pos.x, (int) tmp_pos.y, (int) tmp_pos.z);
+            transform.position = (tmp_pos - generator_location) * chunk_size;
+            Log.Print($"pos: {PersistantData.SpaceTransform.position}, rot: {PersistantData.SpaceTransform.rotation}");
+            Log.Print($"chunk: {instance.generator_location}");
         }
     }
 }

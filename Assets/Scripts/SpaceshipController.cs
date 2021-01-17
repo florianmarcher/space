@@ -37,8 +37,7 @@ public class SpaceshipController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // r = GetComponent<Rigidbody>();
-        space_rigidbody.useGravity = false;
+        transform.rotation = PersistantData.SpaceTransform.rotation;
         look_rotation = transform.rotation;
 
         Cursor.lockState = CursorLockMode.Locked;
@@ -150,12 +149,6 @@ public class SpaceshipController : MonoBehaviour
             space_bodies_in_reach.Add(space_body);
             UpdateNearestSpaceBody();
         }
-
-        if (other.name.Equals("PlanetLandingTrigger"))
-        {
-            planet_to_land = other.transform.parent.GetComponent<Planet>();
-            SpaceHUD.instance.EnablePrompt("[E] Land");
-        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -171,12 +164,6 @@ public class SpaceshipController : MonoBehaviour
                 return;
             nearest_space_body = null;
             UpdateNearestSpaceBody();
-        }
-        
-        if (other.name.Equals("PlanetLandingTrigger"))
-        {
-            planet_to_land = null;
-            SpaceHUD.instance.DisablePrompt();
         }
     }
 

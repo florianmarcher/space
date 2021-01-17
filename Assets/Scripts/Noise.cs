@@ -52,46 +52,48 @@ public class LinearConRng
 
 public class Noise
 {
+	[Serializable]
+	public struct Parameter
+	{
+		public float frequency;
+		public float amplitude;
+	}
+
 	private Vector2 seed;
 
-	private float[] layer_frequencies;
-	private float[] layer_amplitudes;
+	private Parameter[] noise_parameters;
 
 	private static readonly Vector2[] directions_4 =
 		{new Vector2(1, 1), new Vector2(-1, 1), new Vector2(1, -1), new Vector2(-1, -1)};
 
-	public Noise(Vector2 seed_, float[] layer_frequencies_, float[] layer_amplitudes_)
+	public Noise(Vector2 seed_, Parameter[] noise_parameters_)
 	{
-		if (layer_amplitudes_.Length != layer_frequencies_.Length)
-			throw new ArgumentException("frequencies and amplitudes need to have the same length");
-		layer_frequencies = layer_frequencies_;
-		layer_amplitudes = layer_amplitudes_;
+		noise_parameters = noise_parameters_;
 		seed = seed_;
 	}
 
-	public float getNoise2D(Vector2 v)
+	public float GetNoise2D(Vector2 v)
 	{
-		return layer_frequencies.Select((t, i) =>
-			(Mathf.PerlinNoise(seed.x + v.x * directions_4[i % 4].x * t, seed.y + v.y * directions_4[i % 4].y * t) *
-				2 - 1) * layer_amplitudes[i]).Sum();
+		return noise_parameters.Select((parameters, i) =>
+			(Mathf.PerlinNoise(seed.x + v.x * directions_4[i % 4].x * parameters.frequency, seed.y + v.y * directions_4[i % 4].y * parameters.frequency)) * parameters.amplitude).Sum();
 	}
 
-	public float getNoise2D(Vector2 v, IEnumerable<float> frequencies, float[] amplitudes)
+	public float GetNoise2D(Vector2 v, IEnumerable<Parameter> parameters)
 	{
-		return frequencies.Select((t, i) =>
-			(Mathf.PerlinNoise(seed.x + v.x * directions_4[i % 4].x * t, seed.y + v.y * directions_4[i % 4].y * t) *
+		return parameters.Select((p, i) =>
+			(Mathf.PerlinNoise(seed.x + v.x * directions_4[i % 4].x * p.frequency, seed.y + v.y * directions_4[i % 4].y * p.frequency) *
 				2 - 1) *
-			amplitudes[i]).Sum();
+			p.amplitude).Sum();
 	}
 	
 	public static float PerlinNoise3D(float x, float y, float z)
 	{
-		float xy = Mathf.PerlinNoise(x, y);
-		float xz = Mathf.PerlinNoise(x, z);
-		float yz = Mathf.PerlinNoise(y, z);
-		float yx = Mathf.PerlinNoise(y, x);
-		float zx = Mathf.PerlinNoise(z, x);
-		float zy = Mathf.PerlinNoise(z, y);
+		var xy = Mathf.PerlinNoise(x, y);
+		var xz = Mathf.PerlinNoise(x, z);
+		var yz = Mathf.PerlinNoise(y, z);
+		var yx = Mathf.PerlinNoise(y, x);
+		var zx = Mathf.PerlinNoise(z, x);
+		var zy = Mathf.PerlinNoise(z, y);
  
 		return (xy + xz + yz + yx + zx + zy) / 6;
 	}

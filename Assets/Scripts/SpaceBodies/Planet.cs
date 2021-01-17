@@ -39,7 +39,7 @@ namespace SpaceBodies
             var color = new Color(random.NextFloat(0.5f, 1), random.NextFloat(0.5f, 1), random.NextFloat(0.5f, 1));
             var material = GetComponent<MeshRenderer>().material;
             material.color = color;
-            material.SetColor(Global.emission, color * 0.05f);
+            material.SetColor(Global.emission, color * 0.1f);
 
             foreach (var sphere_collider in colliders)
                 sphere_collider.enabled = false;
@@ -49,7 +49,7 @@ namespace SpaceBodies
 
         public override Vector3 AddPlanetMovementFactor(Vector3 movement)
         {
-            return movement * 0.01f;
+            return movement * 0.05f;
         }
 
         public void SetCollisionEnabled(bool new_enabled)

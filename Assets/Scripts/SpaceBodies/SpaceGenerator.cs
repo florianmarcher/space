@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Misc;
+using Space.Scripts;
 using UnityEngine;
 
 namespace SpaceBodies
@@ -34,11 +35,7 @@ namespace SpaceBodies
 
         private IEnumerator GeneratePlanets() 
         {
-            var element = Vector3Int.one * renderDistance;
-
-            for (element.x = -renderDistance; element.x <= renderDistance; element.x++)
-            for (element.y = -renderDistance; element.y <= renderDistance; element.y++)
-            for (element.z = -renderDistance; element.z <= renderDistance; element.z++)
+            foreach (Vector3Int element in new SpiralIterator(renderDistance))
             {
                 var seed = (element - generator_location).GetHashCode().GetHashCode();
                 var random = new Random(seed);
@@ -47,12 +44,12 @@ namespace SpaceBodies
                 chunks.Add(script);
                 StartCoroutine(script.Init(random, chunk_size, chunk_resolution, element));
                 chunk.transform.parent = transform;
-                Log.print("finished " + element);
+                Log.Print("finished " + element);
                 // yield break;
                 yield return null;
             }
 
-            Log.print("finished generating");
+            Log.Print("finished generating");
         }
 
         private void Update()
@@ -62,7 +59,7 @@ namespace SpaceBodies
             if (new_pos == Vector3Int.zero)
                 return;
             generator_location += new_pos;
-            Log.print("Update Chunks");
+            Log.Print("Update Chunks");
             UpdateChunks();
             transform.position -= new_pos * chunk_size;
         }

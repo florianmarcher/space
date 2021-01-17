@@ -49,9 +49,34 @@ public class SpaceshipController : MonoBehaviour
 
     void FixedUpdate()
     {
-        var shift = Input.GetKey(KeyCode.LeftShift);
+        HandleInput();
+    }
+
+    void HandleInput()
+    {
+        HandleMovement();
+        HandleCamera();
+        HandleCameraRotation();
+        HandleSpaceShipRotation();
+    }
+
+    void HandleCamera()
+    {
         
-        if(shift)
+        //Camera follow
+        Transform main_camera_transform;
+        (main_camera_transform = mainCamera.transform).position = Vector3.Lerp(mainCamera.transform.position, camera_target.position + camera_target_offset, Time.deltaTime * cameraSmooth);
+        mainCamera.transform.rotation = Quaternion.Lerp(main_camera_transform.rotation, camera_target.rotation, Time.deltaTime * cameraSmooth);
+
+    }
+
+
+    void HandleMovement()
+    {
+
+        var shift = Input.GetKey(KeyCode.LeftShift);
+
+        if (shift)
         {
             speed = Mathf.Lerp(speed, accelerationSpeed, Time.deltaTime * 10);
             camera_target_offset = transform.TransformDirection(Vector3.back * 0.1f);
@@ -68,24 +93,13 @@ public class SpaceshipController : MonoBehaviour
         move_direction = transform.TransformDirection(move_direction);
         //Set the velocity, so you can move
         space_rigidbody.velocity = AddPlanetMovementFactor(move_direction * -1);
-
-        //Camera follow
-        Transform main_camera_transform;
-        (main_camera_transform = mainCamera.transform).position = Vector3.Lerp(mainCamera.transform.position, camera_target.position + camera_target_offset, Time.deltaTime * cameraSmooth);
-        mainCamera.transform.rotation = Quaternion.Lerp(main_camera_transform.rotation, camera_target.rotation, Time.deltaTime * cameraSmooth);
-        
-        float right = 0;
-        float up = 0;
+    }
+    
+    void HandleSpaceShipRotation()
+    {
+        var right = Input.GetAxis("Horizontal");
+        var up = Input.GetAxis("Vertical");
         var rotation_z_tmp = 0;
-        
-        if (Input.GetKey(KeyCode.W))
-            up = 1;
-        if (Input.GetKey(KeyCode.A))
-            right = -1;
-        if (Input.GetKey(KeyCode.S))
-            up = -1;
-        if (Input.GetKey(KeyCode.D))
-            right = 1;
         if (Input.GetKey(KeyCode.Q))
             rotation_z_tmp = -1;
         if (Input.GetKey(KeyCode.E))
@@ -96,7 +110,11 @@ public class SpaceshipController : MonoBehaviour
         var local_rotation = Quaternion.Euler(-up_smooth, right_smooth, rotation_z_tmp * -rotationSpeed);
         look_rotation *= local_rotation;
         transform.rotation = look_rotation;
+    }
 
+    void HandleCameraRotation()
+    {
+        var shift = Input.GetKey(KeyCode.LeftShift);
 
         var mouse_x = Input.GetAxis("Mouse X");
         var mouse_y = Input.GetAxis("Mouse Y");
@@ -128,7 +146,7 @@ public class SpaceshipController : MonoBehaviour
         if (space_body)
         {
             space_body.OnSpaceshipEnter();
-            Log.print($"enter {space_body}");
+            Log.Print($"enter {space_body}");
             space_bodies_in_reach.Add(space_body);
             UpdateNearestSpaceBody();
         }
@@ -146,7 +164,7 @@ public class SpaceshipController : MonoBehaviour
         if (space_body)
         {
             space_body.OnSpaceshipExit();
-            Log.print($"exit {space_body}");
+            Log.Print($"exit {space_body}");
             space_bodies_in_reach.Remove(space_body);
 
             if (nearest_space_body != space_body)

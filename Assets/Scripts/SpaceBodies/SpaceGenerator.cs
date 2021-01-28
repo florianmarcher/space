@@ -17,6 +17,8 @@ namespace SpaceBodies
         [SerializeField] public GameObject solar_system;
         [SerializeField] public GameObject space_chunk;
 
+        [SerializeField] public int seed;
+
         [SerializeField] public Vector3Int generator_location;
         private readonly List<SpaceChunk> chunks = new List<SpaceChunk>();
         public Vector3 position => generator_location * chunk_size + transform.position;
@@ -39,8 +41,8 @@ namespace SpaceBodies
         {
             foreach (Vector3Int element in new SpiralIterator(renderDistance))
             {
-                var seed = (element - generator_location).GetHashCode().GetHashCode().GetHashCode();
-                var random = new Random(seed);
+                var chunk_seed = (element - generator_location).GetHashCode().GetHashCode().GetHashCode();
+                var random = new Random(seed ^ chunk_seed);
                 var chunk = Instantiate(space_chunk, transform);
                 chunk.transform.localPosition = element * chunk_size;
                 var script = chunk.GetComponent<SpaceChunk>();

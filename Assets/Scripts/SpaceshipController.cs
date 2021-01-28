@@ -139,32 +139,26 @@ public class SpaceshipController : MonoBehaviour
     }
 
 
-    private void OnTriggerEnter(Collider other)
+    public void OnEnterSpaceBodyRange(SpaceBody space_body)
     {
-        var space_body = other.GetComponent<SpaceBody>();
-        if (space_body)
-        {
-            space_body.OnSpaceshipEnter();
-            Log.Print($"enter {space_body}");
-            space_bodies_in_reach.Add(space_body);
-            UpdateNearestSpaceBody();
-        }
+        Log.Print($"enter {space_body}");
+        Debug.Assert(!space_bodies_in_reach.Contains(space_body));
+        space_bodies_in_reach.Add(space_body);
+        UpdateNearestSpaceBody();
+        
     }
 
-    private void OnTriggerExit(Collider other)
+    public void OnExitSpaceBodyRange(SpaceBody space_body)
     {
-        var space_body = other.GetComponent<SpaceBody>();
-        if (space_body)
-        {
-            space_body.OnSpaceshipExit();
-            Log.Print($"exit {space_body}");
-            space_bodies_in_reach.Remove(space_body);
+        Log.Print($"exit {space_body}");
+        Debug.Assert(space_bodies_in_reach.Contains(space_body));
+        space_bodies_in_reach.Remove(space_body);
 
-            if (nearest_space_body != space_body)
-                return;
-            nearest_space_body = null;
-            UpdateNearestSpaceBody();
-        }
+        if (nearest_space_body != space_body)
+            return;
+        nearest_space_body = null;
+        UpdateNearestSpaceBody();
+    
     }
 
     private void UpdateNearestSpaceBody()
@@ -177,7 +171,7 @@ public class SpaceshipController : MonoBehaviour
         
         foreach (var space_body in space_bodies_in_reach)
         {
-            if (space_body.transform.position.sqrMagnitude < nearest_space_body.transform.position.sqrMagnitude)
+            if (space_body.GetSqrPlayerDistance() < nearest_space_body.GetSqrPlayerDistance())
                 nearest_space_body = space_body;
         }
     }

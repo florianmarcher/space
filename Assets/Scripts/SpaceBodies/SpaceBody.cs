@@ -23,7 +23,7 @@ namespace SpaceBodies
             StartCoroutine(Scale(1, 0, size));
         }
 
-        IEnumerator Scale(float duration, float start, float end, Action on_finish = null)
+        private IEnumerator Scale(float duration, float start, float end, Action on_finish = null)
         {
             transform.localScale = Vector3.one * start;
             var factor = start < end ? 1 : -1;
@@ -49,6 +49,25 @@ namespace SpaceBodies
         {
             return movement;
         }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            var space_ship = other.GetComponent<SpaceshipController>();
+            if(!space_ship)
+                return;
+            OnSpaceshipEnter();
+            space_ship.OnEnterSpaceBodyRange(this);
+        } 
+        private void OnTriggerExit(Collider other)
+        {
+            var space_ship = other.GetComponent<SpaceshipController>();
+            if(!space_ship)
+                return;
+            OnSpaceshipExit();
+            space_ship.OnExitSpaceBodyRange(this);
+        }
+
+        public float GetSqrPlayerDistance() => transform.position.sqrMagnitude;
 
         public virtual void OnSpaceshipEnter(){}
         public virtual void OnSpaceshipExit(){}

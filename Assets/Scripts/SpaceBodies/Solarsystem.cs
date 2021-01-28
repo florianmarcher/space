@@ -7,7 +7,7 @@ namespace SpaceBodies
 {
     public class Solarsystem : SpaceBody
     {
-        private List<Planet> planets = new List<Planet>();
+        private readonly List<Planet> planets = new List<Planet>();
 
         private float brightness;
 
@@ -18,7 +18,7 @@ namespace SpaceBodies
         public void Init(int seed_)
         {
             random = new Random(seed_);
-            base.Init(seed_, random.NextFloat(500, 2000));
+            base.Init(seed_, random.NextFloat(10, 40));
             brightness = random.NextFloat(450, 800);
             
             transform.localRotation = Quaternion.Euler(random.NextVector3(Vector3.one * 360));
@@ -33,8 +33,8 @@ namespace SpaceBodies
             var colliders = GetComponents<SphereCollider>();
             sphere_collider = colliders.FirstOrDefault(c => !c.isTrigger);
             sphere_trigger = colliders.FirstOrDefault(c => c.isTrigger);
-            Debug.Assert(sphere_collider != null, nameof(sphere_collider) + " != null");
-            Debug.Assert(sphere_trigger != null, nameof(sphere_trigger) + " != null");
+            Debug.Assert(sphere_collider != null, nameof(sphere_collider) + " == null");
+            Debug.Assert(sphere_trigger != null, nameof(sphere_trigger) + " == null");
             sphere_collider.enabled = false;
             sphere_trigger.enabled = false;
         }
@@ -45,8 +45,8 @@ namespace SpaceBodies
             var planet_count = random.Next(5);
             for (var i = 0; i < planet_count; i++)
             {
-                var planet_size = random.NextFloat(0.1f, 0.5f);
-                var distance = 0.03f + random.NextFloat(0.02f * i, 0.02f * (i + 1));
+                var planet_size = random.NextFloat(5F, 25F);
+                var distance = 1.5F + random.NextFloat(1F * i, 1F * (i + 1));
             
                 var new_planet = Instantiate(SpaceGenerator.instance.planet, transform).GetComponent<Planet>();
                 new_planet.Init(transform, planet_size, distance, random.Next());
@@ -54,10 +54,7 @@ namespace SpaceBodies
             }
         }
 
-        public override Vector3 AddPlanetMovementFactor(Vector3 movement)
-        {
-            return movement * 0.5f;
-        }
+        public override Vector3 AddPlanetMovementFactor(Vector3 movement) => movement * 0.5f;
 
         public override void OnSpaceshipEnter()
         {

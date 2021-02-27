@@ -96,5 +96,8 @@ namespace Misc
 		{
 			return (value - from_source) / (to_source - from_source) * (to_target - from_target) + from_target;
 		}
+
+
+		public static Color ToColor(this Vector3 v) => new Color(v.x, v.y, v.z);
 	}
 }

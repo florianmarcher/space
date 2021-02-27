@@ -4,23 +4,29 @@ using UnityEngine;
 
 namespace SpaceBodies
 {
+    public struct SpaceBodyData
+    {
+        public Random random;
+        public int seed;
+        public float size;
+        public float rotation_speed;
+        public float time_offset;
+    }
+    
+    
     public abstract class SpaceBody : MonoBehaviour
     {
-        [SerializeField]public int seed;
-        [SerializeField]protected float size;
-        [SerializeField]protected float rotation_speed;
-        [SerializeField]protected float time_offset;
-        protected Random random;
+        protected SpaceBodyData data;
 
 
         protected void Init(int seed_, float s)
         {
-            seed = seed_;
-            size = s;
-            if(random == null) random = new Random(seed);
-            time_offset = (float) (random.NextDouble() * 1000);
+            data.seed = seed_;
+            data.size = s;
+            if(data.random == null) data.random = new Random(data.seed);
+            data.time_offset = (float) (data.random.NextDouble() * 1000);
 
-            StartCoroutine(Scale(1, 0, size));
+            StartCoroutine(Scale(1, 0, data.size));
         }
 
         private IEnumerator Scale(float duration, float start, float end, Action on_finish = null)
@@ -30,11 +36,11 @@ namespace SpaceBodies
 
             while (transform.localScale.x < end)
             {
-                transform.localScale += size / duration * Time.deltaTime * factor * Vector3.one;
+                transform.localScale += data.size / duration * Time.deltaTime * factor * Vector3.one;
                 yield return null;
             }
             
-            transform.localScale = Vector3.one * size;
+            transform.localScale = Vector3.one * data.size;
             
             on_finish?.Invoke();
         }
@@ -42,7 +48,7 @@ namespace SpaceBodies
         public void Destroy()
         {
             transform.parent = SpaceGenerator.instance.transform;
-            StartCoroutine(Scale(1, size, 0, () => Destroy(gameObject)));
+            StartCoroutine(Scale(1, data.size, 0, () => Destroy(gameObject)));
         }
 
         public virtual Vector3 AddPlanetMovementFactor(Vector3 movement)
@@ -68,6 +74,8 @@ namespace SpaceBodies
         }
 
         public float GetSqrPlayerDistance() => transform.position.sqrMagnitude;
+
+        protected float GetTime() => Time.timeSinceLevelLoad + data.time_offset;
 
         public virtual void OnSpaceshipEnter(){}
         public virtual void OnSpaceshipExit(){}

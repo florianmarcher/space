@@ -17,12 +17,12 @@ namespace SpaceBodies
         // Start is called before the first frame update
         public void Init(int seed_)
         {
-            random = new Random(seed_);
-            base.Init(seed_, random.NextFloat(10, 40));
-            brightness = random.NextFloat(450, 800);
+            data.random = new Random(seed_);
+            base.Init(seed_, data.random.NextFloat(10, 40));
+            brightness = data.random.NextFloat(450, 800);
             
-            transform.localRotation = Quaternion.Euler(random.NextVector3(Vector3.one * 360));
-            var color = new Color(random.NextFloat(0.7f, 1), random.NextFloat(0.7f, 1), random.NextFloat(0.7f, 1));
+            transform.localRotation = Quaternion.Euler(data.random.NextVector3(Vector3.one * 360));
+            var color = data.random.NextVector3(0.7f, 1).ToColor();
             var material = GetComponent<MeshRenderer>().material;
             material.color = color;
             material.SetColor(Global.emission, color);
@@ -42,14 +42,14 @@ namespace SpaceBodies
         private void CreatePlanets()
         {
             
-            var planet_count = random.Next(5);
+            var planet_count = data.random.Next(5);
             for (var i = 0; i < planet_count; i++)
             {
-                var planet_size = random.NextFloat(5F, 25F);
-                var distance = 1.5F + random.NextFloat(1F * i, 1F * (i + 1));
+                var planet_size = data.random.NextFloat(5F, 25F);
+                var distance = 1.5F + data.random.NextFloat(1F * i, 1F * (i + 1));
             
                 var new_planet = Instantiate(SpaceGenerator.instance.planet, transform).GetComponent<Planet>();
-                new_planet.Init(transform, planet_size, distance, random.Next());
+                new_planet.Init(transform, planet_size, distance, data.random.Next());
                 planets.Add(new_planet);
             }
         }

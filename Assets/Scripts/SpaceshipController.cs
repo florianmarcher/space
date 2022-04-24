@@ -5,7 +5,13 @@ using SpaceBodies;
 using UI;
 using UnityEngine;
 
-public class SpaceshipController : MonoBehaviour
+interface IPlayerController
+{
+    void OnEnterSpaceBodyRange(SpaceBody spaceBody);
+    void OnExitSpaceBodyRange(SpaceBody spaceBody);
+}
+
+public class SpaceshipController : MonoBehaviour, IPlayerController
 {
     [SerializeField] private float normalSpeed = 25f;
     [SerializeField] private float accelerationSpeed = 45f;
@@ -24,7 +30,7 @@ public class SpaceshipController : MonoBehaviour
     private Vector3 camera_target_offset;
     private Planet planet_to_land;
 
-    private readonly List<SpaceBody> space_bodies_in_reach = new List<SpaceBody>();
+    private readonly List<SpaceBody> space_bodies_in_reach = new();
     private SpaceBody nearest_space_body;
 
     public static SpaceshipController instance { get; private set; }

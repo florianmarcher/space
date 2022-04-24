@@ -30,7 +30,8 @@ Transform:
   m_GameObject: {fileID: 7441792944309352648}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 100, y: 100, z: 100}
+  m_LocalScale: {x: 1.3, y: 1.3, z: 1.3}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 84558172806322102}
   m_Father: {fileID: 0}
@@ -55,14 +56,16 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 67d5111ed0a4ac74a84f129dee778425, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -83,6 +86,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &-7030634907154794062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95,14 +99,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c1e2109f7625184297eadc3ac9cad51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seed: 0
-  size: 0
-  rotation_speed: 0
-  time_offset: 0
-  distance: 0
-  speed: 0
+  data:
+    seed: 117
+    radius: 1.11
+    rotation_speed: -7.44825
+    time_offset: 726.2433
+    name: '0: 1.3'
+    density: 0
+    tilt: 0
+    volume: 9.202771
+    mass: 0
+  animate_camera: 1
+  distance: 1
+  speed: 0.008538603
+  movement_enabled: 1
+  mesh_resolution: 31
+  mesh: {fileID: 6602985658722971095}
+  world_position: {x: 0, y: 0, z: 0}
   delta_position: {x: 0, y: 0, z: 0}
-  colliders: []
+  colliders:
+  - {fileID: 254275654500546841}
+  - {fileID: 3680465189681463752}
+  noise:
+    noise_parameters:
+    - noise_type: 1
+      enabled: 1
+      frequency: 11.34
+      amplitude: -2.61
+    - noise_type: 0
+      enabled: 1
+      frequency: 11.06
+      amplitude: 2.49
+    - noise_type: 0
+      enabled: 1
+      frequency: 2.65
+      amplitude: 5.14
+    - noise_type: 1
+      enabled: 1
+      frequency: 8.57
+      amplitude: -3.5
 --- !u!135 &254275654500546841
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -114,7 +149,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.03
+  m_Radius: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!135 &3680465189681463752
 SphereCollider:
@@ -125,7 +160,7 @@ SphereCollider:
   m_GameObject: {fileID: 7441792944309352648}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.009999998
   m_Center: {x: 0, y: 0, z: 0}
@@ -156,6 +191,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.01, y: 0.010000002, z: 0.010000002}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7785984805310653042}
   m_RootOrder: 0

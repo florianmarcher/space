@@ -35,8 +35,8 @@ namespace SpaceBodies
             sphere_trigger = colliders.FirstOrDefault(c => c.isTrigger);
             Debug.Assert(sphere_collider != null, nameof(sphere_collider) + " == null");
             Debug.Assert(sphere_trigger != null, nameof(sphere_trigger) + " == null");
-            sphere_collider.enabled = false;
-            sphere_trigger.enabled = false;
+         //   sphere_collider.enabled = false;
+         //   sphere_trigger.enabled = false;
         }
 
         private void CreatePlanets()
@@ -45,7 +45,7 @@ namespace SpaceBodies
             var planet_count = data.random.Next(5);
             for (var i = 0; i < planet_count; i++)
             {
-                var planet_size = data.random.NextFloat(5F, 25F);
+                var planet_size = data.random.NextFloat(0.5F, 0.25F);
                 var distance = 1.5F + data.random.NextFloat(1F * i, 1F * (i + 1));
             
                 var new_planet = Instantiate(SpaceGenerator.instance.planet, transform).GetComponent<Planet>();
@@ -54,35 +54,15 @@ namespace SpaceBodies
             }
         }
 
-        public override Vector3 AddPlanetMovementFactor(Vector3 movement) => movement * 0.5f;
-
-        public override void OnSpaceshipEnter()
-        {
-            sphere_collider.enabled = true;
-            foreach (var planet in planets)
-            {
-                planet.SetCollisionEnabled(true);
-            }
-        }
-
-        public override void OnSpaceshipExit()
-        {
-            sphere_collider.enabled = false;
-            foreach (var planet in planets)
-            {
-                planet.SetCollisionEnabled(false);
-            }
-        }
-
         public override void OnSpaceshipEnterChunk()
         {
-            sphere_trigger.enabled = true;
+          //  sphere_trigger.enabled = true;
             CreatePlanets();
         }
         
         public override void OnSpaceshipExitChunk()
         {
-            sphere_trigger.enabled = false;
+     //       sphere_trigger.enabled = false;
             foreach (var planet in planets)
             {
                 planet.Destroy();
@@ -90,10 +70,14 @@ namespace SpaceBodies
             planets.Clear();
         }
 
-        public override Vector3 GetGravityInfluence(Vector3 destiny)
+        public override void OnSelectTarget()
         {
-            var ret = base.GetGravityInfluence(destiny);
-            return planets.Aggregate(ret, (current, planet) => current + planet.GetGravityInfluence(destiny));
+            sphere_trigger.enabled = false;
+        }
+
+        public override void OnDeselectTarget()
+        {
+            sphere_trigger.enabled = true;
         }
 
         public override List<SpaceBody> Children() => new(planets);

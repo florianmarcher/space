@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace SpaceBodies
 {
+    [Serializable]
     public struct SpaceBodyData
     {
         public Random random;
@@ -15,6 +16,7 @@ namespace SpaceBodies
         public float time_offset;
         public string name;
 
+        public float diameter => radius * 2;
 
         //new
         public float density;
@@ -32,13 +34,13 @@ namespace SpaceBodies
 
     public abstract class SpaceBody : MonoBehaviour, ISpaceBodyParent
     {
-        protected SpaceBodyData data;
+        [SerializeField] protected SpaceBodyData data;
 
 
-        protected void Init(int seed_, float s)
+        protected void Init(int seed_, float radius)
         {
             data.seed = seed_;
-            data.radius = s;
+            data.radius = radius;
             data.random ??= new Random(data.seed);
             data.time_offset = (float) (data.random.NextDouble() * 1000);
 
@@ -80,19 +82,19 @@ namespace SpaceBodies
 
         private void OnTriggerEnter(Collider other)
         {
-            var space_ship = other.GetComponent<SpaceshipController>();
-            if (!space_ship)
+            var space_ship = other.GetComponent<IPlayerController>();
+            if (space_ship == null)
                 return;
-            OnSpaceshipEnter();
+            OnSelectTarget();
             space_ship.OnEnterSpaceBodyRange(this);
         }
 
         private void OnTriggerExit(Collider other)
         {
-            var space_ship = other.GetComponent<SpaceshipController>();
-            if (!space_ship)
+            var space_ship = other.GetComponent<IPlayerController>();
+            if (space_ship == null)
                 return;
-            OnSpaceshipExit();
+            OnDeselectTarget();
             space_ship.OnExitSpaceBodyRange(this);
         }
 
@@ -110,11 +112,11 @@ namespace SpaceBodies
 
         protected float GetTime() => Time.timeSinceLevelLoad + data.time_offset;
 
-        public virtual void OnSpaceshipEnter()
+        public virtual void OnSelectTarget()
         {
         }
 
-        public virtual void OnSpaceshipExit()
+        public virtual void OnDeselectTarget()
         {
         }
 

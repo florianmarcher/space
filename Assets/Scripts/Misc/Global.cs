@@ -21,9 +21,11 @@ namespace Misc
         //a few helpful defines and functions
         public static Vector2Int error_2 = new(int.MinValue, int.MinValue);
         public static Vector3Int error_3 = new(int.MinValue, int.MinValue, int.MinValue);
-        public static Vector2Int[] directions_4 = {Vector2Int.left, Vector2Int.right, Vector2Int.up, Vector2Int.down};
+        public static readonly Vector2Int[] directions_4 = {Vector2Int.left, Vector2Int.right, Vector2Int.up, Vector2Int.down};
+        
+        public static readonly Vector3Int[] directions_6 = {Vector3Int.left, Vector3Int.right, Vector3Int.up, Vector3Int.down, Vector3Int.forward, Vector3Int.back};
 
-        public static Vector2Int[] directions_8 =
+        public static readonly Vector2Int[] directions_8 =
         {
             Vector2Int.left, Vector2Int.left + Vector2Int.up,
             Vector2Int.up, Vector2Int.up + Vector2Int.right,
@@ -73,6 +75,10 @@ namespace Misc
             var sa = Mathf.Sin(-radians.Value);
             return new Vector3(ca * v.x - sa * v.z, 0, sa * v.x + ca * v.z);
         }
+        
+        public static Vector3 Rotate(this Vector3 v, Vector3 current, Vector3 target) => v.Rotate(target.normalized - current.normalized);
+        public static Vector3 Rotate(this Vector3 v, Vector3 target) => Quaternion.Euler(target * 90) * v;
+
 
         public static Vector2 Map(this Vector2 v, Vector2 from_source, Vector2 to_source, Vector2 from_target,
             Vector2 to_target)
@@ -104,6 +110,10 @@ namespace Misc
 
 
         public static Color ToColor(this Vector3 v) => new(v.x, v.y, v.z);
+
+        public static float[] ToFloatArray(this Vector2 v) => new[] {v.x, v.y};
+        public static float[] ToFloatArray(this Vector3 v) => new[] {v.x, v.y, v.z};
+        public static float[] ToFloatArray(this Vector4 v) => new[] {v.x, v.y, v.z, v.w};
     }
 
     public class Constants

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Misc;
-using Space.Scripts;
 using UnityEngine;
 
 namespace SpaceBodies
@@ -12,7 +11,7 @@ namespace SpaceBodies
         [SerializeField] private int renderDistance = 10;
         [SerializeField] private int chunk_resolution = 10;
         [SerializeField] private int chunk_size = 10;
-    
+
         [SerializeField] public GameObject planet;
         [SerializeField] public GameObject solar_system;
         [SerializeField] public GameObject space_chunk;
@@ -20,7 +19,7 @@ namespace SpaceBodies
         [SerializeField] public int seed;
 
         [SerializeField] public Vector3Int generator_location;
-        private readonly List<SpaceChunk> chunks = new List<SpaceChunk>();
+        private readonly List<SpaceChunk> chunks = new();
         public Vector3 position => generator_location * chunk_size + transform.position;
 
         public static SpaceGenerator instance { get; private set; }
@@ -37,7 +36,7 @@ namespace SpaceBodies
             StartCoroutine(nameof(GeneratePlanets));
         }
 
-        private IEnumerator GeneratePlanets() 
+        private IEnumerator GeneratePlanets()
         {
             foreach (Vector3Int element in new SpiralIterator(renderDistance))
             {
@@ -54,6 +53,11 @@ namespace SpaceBodies
             }
 
             Log.Print("finished generating");
+
+            foreach (var space_body in new SpaceBodyIterator(chunks))
+            {
+                print($"{space_body}");
+            }
         }
 
         private void Update()
@@ -67,25 +71,26 @@ namespace SpaceBodies
             UpdateChunks();
             transform.position -= new_pos * chunk_size;
         }
-        
+
         private void UpdateChunks()
         {
             var to_remove = chunks.Where(chunk => !IsInRenderDistance(chunk)).ToArray();
             var i = 0;
-            
+
             foreach (Vector3Int element in new SpiralIterator(renderDistance))
             {
                 var chunk = chunks.FirstOrDefault(c => c.position == element - generator_location);
-                if(chunk != default)
+                if (chunk != default)
                 {
-                    if(element.sqrMagnitude < 2.5)
+                    if (element.sqrMagnitude < 2.5)
                         chunk.OnSpaceShipEnter();
                     else
                         chunk.OnSpaceShipExit();
-                    
+
                     chunk.UpdatePosition(generator_location);
                     continue;
-                }                
+                }
+
                 var seed = (element - generator_location).GetHashCode().GetHashCode();
                 var random = new Random(seed);
 
@@ -96,9 +101,12 @@ namespace SpaceBodies
 
         private bool IsInRenderDistance(SpaceChunk chunk)
         {
-            return chunk.position.x >= -generator_location.x - renderDistance && chunk.position.x <= -generator_location.x + renderDistance && 
-                   chunk.position.y >= -generator_location.y - renderDistance && chunk.position.y <= -generator_location.y + renderDistance && 
-                   chunk.position.z >= -generator_location.z - renderDistance && chunk.position.z <= -generator_location.z + renderDistance;
+            return chunk.position.x >= -generator_location.x - renderDistance &&
+                   chunk.position.x <= -generator_location.x + renderDistance &&
+                   chunk.position.y >= -generator_location.y - renderDistance &&
+                   chunk.position.y <= -generator_location.y + renderDistance &&
+                   chunk.position.z >= -generator_location.z - renderDistance &&
+                   chunk.position.z <= -generator_location.z + renderDistance;
         }
 
         private void SetGeneratorPosition()

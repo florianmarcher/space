@@ -7,7 +7,7 @@ namespace SpaceBodies
 {
     public class Solarsystem : SpaceBody
     {
-        private readonly List<Planet> planets = new List<Planet>();
+        private readonly List<Planet> planets = new();
 
         private float brightness;
 
@@ -89,5 +89,13 @@ namespace SpaceBodies
             }
             planets.Clear();
         }
+
+        public override Vector3 GetGravityInfluence(Vector3 destiny)
+        {
+            var ret = base.GetGravityInfluence(destiny);
+            return planets.Aggregate(ret, (current, planet) => current + planet.GetGravityInfluence(destiny));
+        }
+
+        public override List<SpaceBody> Children() => new(planets);
     }
 }

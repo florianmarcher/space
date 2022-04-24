@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using Misc;
+﻿using Misc;
 using UnityEngine;
 
 namespace SpaceBodies
@@ -10,6 +8,7 @@ namespace SpaceBodies
         private Transform pivot;
         [SerializeField] private float distance;
         [SerializeField] private float speed;
+        [SerializeField] private bool movement_enabled;
 
         public Vector3 delta_position;
         public SphereCollider[] colliders;
@@ -22,8 +21,14 @@ namespace SpaceBodies
         // Update is called once per frame
         void Update()
         {
-            return;
-            transform.localPosition = new Vector3(distance * Mathf.Sin(GetTime() * speed), distance * Mathf.Cos(GetTime() * speed));
+            if (movement_enabled)
+                Move();
+        }
+
+        private void Move()
+        {
+            transform.localPosition = new Vector3(distance * Mathf.Sin(GetTime() * speed),
+                distance * Mathf.Cos(GetTime() * speed));
             transform.localRotation = Quaternion.Euler(0, 0, data.rotation_speed * GetTime());
         }
 
@@ -34,10 +39,10 @@ namespace SpaceBodies
             pivot = p;
             speed = data.random.NextFloat(0.002f, 0.01f);
             data.rotation_speed = data.random.NextFloat(1, -10);
-        
-            transform.localScale = Vector3.one * data.size;
-        
-            var color = new Color(data.random.NextFloat(0.5f, 1), data.random.NextFloat(0.5f, 1), data.random.NextFloat(0.5f, 1));
+
+            transform.localScale = Vector3.one * data.radius;
+
+            var color = data.random.NextVector4(0.5f, 1f);
             var material = GetComponent<MeshRenderer>().material;
             material.color = color;
             material.SetColor(Global.emission, color * 0.1f);
@@ -45,7 +50,8 @@ namespace SpaceBodies
             foreach (var sphere_collider in colliders)
                 sphere_collider.enabled = false;
 
-            transform.localPosition = new Vector3(distance * Mathf.Sin(GetTime() * speed), distance * Mathf.Cos(GetTime() * speed));
+            transform.localPosition = new Vector3(distance * Mathf.Sin(GetTime() * speed),
+                distance * Mathf.Cos(GetTime() * speed));
         }
 
         public override Vector3 AddPlanetMovementFactor(Vector3 movement)

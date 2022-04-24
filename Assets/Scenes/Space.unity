@@ -312,6 +312,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlanetGenerator
       objectReference: {fileID: 0}
+    - target: {fileID: 883491485865898981, guid: b96335e64b545804089bb81b1b1c61d1,
+        type: 3}
+      propertyPath: chunk_resolution
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 883491485865898981, guid: b96335e64b545804089bb81b1b1c61d1,
+        type: 3}
+      propertyPath: renderDistance
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b96335e64b545804089bb81b1b1c61d1, type: 3}
 --- !u!1001 &6700718807403456363
